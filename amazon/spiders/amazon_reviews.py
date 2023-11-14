@@ -1,18 +1,33 @@
 import scrapy
 from urllib.parse import urljoin
 
+
 class AmazonReviewsSpider(scrapy.Spider):
     name = "amazon_reviews"
 
+    def __init__(self, country='', *args, **kwargs):
+        super(AmazonReviewsSpider, self).__init__(*args, **kwargs)
+        self.country = country.lower()
+
+        if self.country == 'india':
+            self.base_url = 'https://www.amazon.in'
+        elif self.country == 'america':
+            self.base_url = 'https://www.amazon.com'
+        elif self.country == 'british':
+            self.base_url = 'https://www.amazon.co.uk'
+        else:
+            raise ValueError('Invalid country provided. Please provide a valid country (india/america/british) using the -a option')
+
     custom_settings = {
-        'FEEDS': { 'data/%(name)s_%(time)s.csv': { 'format': 'csv',}}
+        'FEEDS': { './../../data/%(asin)s_%(time)s.csv': { 'format': 'csv',}}
         }
 
     def start_requests(self):
-        asin_list = ['B09G9FPHY6']
-        for asin in asin_list:
-            amazon_reviews_url = f'https://www.amazon.com/product-reviews/{asin}/'
-            yield scrapy.Request(url=amazon_reviews_url, callback=self.parse_reviews, meta={'asin': asin, 'retry_count': 0})
+        asin = getattr(self, 'asin', None)
+        if asin is None:
+            raise ValueError('Please provide an ASIN using the -a option')
+        amazon_reviews_url = f'{self.base_url}/product-reviews/{asin}/'
+        yield scrapy.Request(url=amazon_reviews_url, callback=self.parse_reviews, meta={'asin': asin, 'retry_count': 0})
 
 
     def parse_reviews(self, response):
@@ -22,7 +37,7 @@ class AmazonReviewsSpider(scrapy.Spider):
         next_page_relative_url = response.css(".a-pagination .a-last>a::attr(href)").get()
         if next_page_relative_url is not None:
             retry_count = 0
-            next_page = urljoin('https://www.amazon.com/', next_page_relative_url)
+            next_page = urljoin(self.base_url, next_page_relative_url)
             yield scrapy.Request(url=next_page, callback=self.parse_reviews, meta={'asin': asin, 'retry_count': retry_count})
 
         ## Adding this retry_count here so we retry any amazon js rendered review pages
