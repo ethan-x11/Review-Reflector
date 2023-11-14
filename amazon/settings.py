@@ -1,3 +1,7 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BOT_NAME = 'amazon'
 
@@ -7,7 +11,7 @@ NEWSPIDER_MODULE = 'amazon.spiders'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
-SCRAPEOPS_API_KEY = '70c2a3ad-0df9-4b2e-96f2-d1bc210cedb5'
+SCRAPEOPS_API_KEY = os.getenv('API_KEY')
 
 SCRAPEOPS_PROXY_ENABLED = True
 # SCRAPEOPS_PROXY_SETTINGS = {'country': 'us'}

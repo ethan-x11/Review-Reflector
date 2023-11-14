@@ -10,21 +10,19 @@ class AmazonReviewsSpider(scrapy.Spider):
 
     def start_requests(self):
         asin_list = ['B09G9FPHY6']
-        urlstart = 'https://www.amazon.com'
         for asin in asin_list:
-            amazon_reviews_url = f'{urlstart}/product-reviews/{asin}/'
+            amazon_reviews_url = f'https://www.amazon.com/product-reviews/{asin}/'
             yield scrapy.Request(url=amazon_reviews_url, callback=self.parse_reviews, meta={'asin': asin, 'retry_count': 0})
 
 
     def parse_reviews(self, response):
         asin = response.meta['asin']
-        urlstart = 'https://www.amazon.com'
         retry_count = response.meta['retry_count']
 
         next_page_relative_url = response.css(".a-pagination .a-last>a::attr(href)").get()
         if next_page_relative_url is not None:
             retry_count = 0
-            next_page = urljoin(urlstart, next_page_relative_url)
+            next_page = urljoin('https://www.amazon.com/', next_page_relative_url)
             yield scrapy.Request(url=next_page, callback=self.parse_reviews, meta={'asin': asin, 'retry_count': retry_count})
 
         ## Adding this retry_count here so we retry any amazon js rendered review pages

@@ -1,1 +1,4 @@
 scrapy
+scrapeops-scrapy
+scrapeops-scrapy-proxy-sdk
+python-dotenv
