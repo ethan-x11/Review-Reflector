@@ -1,2 +1,7 @@
+__pycache__
+amazon\__pycache__
+amazon\scrapper\__pycache__
 amazon_scrapper\venv
 venv
+data
+.env
