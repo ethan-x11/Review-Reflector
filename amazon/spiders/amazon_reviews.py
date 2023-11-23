@@ -5,28 +5,35 @@ from urllib.parse import urljoin
 class AmazonReviewsSpider(scrapy.Spider):
     name = "amazon_reviews"
 
-    def __init__(self, country='', *args, **kwargs):
+    def __init__(self, country='', stars='6' , *args, **kwargs):
         super(AmazonReviewsSpider, self).__init__(*args, **kwargs)
         self.country = country.lower()
+        
+        countrydict = {"india": 'https://www.amazon.in', "america": 'https://www.amazon.com', "british": 'https://www.amazon.co.uk'}
 
-        if self.country == 'india':
-            self.base_url = 'https://www.amazon.in'
-        elif self.country == 'america':
-            self.base_url = 'https://www.amazon.com'
-        elif self.country == 'british':
-            self.base_url = 'https://www.amazon.co.uk'
-        else:
+        try:
+            self.base_url = countrydict[self.country]
+        except:
             raise ValueError('Invalid country provided. Please provide a valid country (india/america/british) using the -a option')
-
+        
+        stardict = {0:"all_stars", 5:"five_star", 4:"four_star", 3:"three_star", 2:"two_star", 1:"one_star"}
+        
+        self.stars = int(stars)
+        try:
+            self.star = stardict[self.stars]
+        except:
+            raise ValueError('Invalid country provided. Please provide a valid stars count using the -a option')
+        
     custom_settings = {
-        'FEEDS': { './../../data/%(asin)s_%(time)s.csv': { 'format': 'csv',}}
+        'FEEDS': { './data/%(asin)s_%(time)s.csv': { 'format': 'csv',}}
         }
 
     def start_requests(self):
         asin = getattr(self, 'asin', None)
+        star = getattr(self, 'star', None)
         if asin is None:
             raise ValueError('Please provide an ASIN using the -a option')
-        amazon_reviews_url = f'{self.base_url}/product-reviews/{asin}/'
+        amazon_reviews_url = f'{self.base_url}/product-reviews/{asin}?sortBy=recent&filterByStar={star}'
         yield scrapy.Request(url=amazon_reviews_url, callback=self.parse_reviews, meta={'asin': asin, 'retry_count': 0})
 
 
@@ -47,7 +54,7 @@ class AmazonReviewsSpider(scrapy.Spider):
 
 
         ## Parse Product Reviews
-        review_elements = response.css("#cm_cr-review_list div.review")
+        review_elements = response.css("#cm_cr-review_list div.review") 
         for review_element in review_elements:
             yield {
                     "asin": asin,

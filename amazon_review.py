@@ -13,12 +13,45 @@ def review_scrapper_script(asin, region):
     # Construct the filename with the current date
     date = datetime.datetime.now().strftime("%Y-%m-%d")
     filename = f"{asin}_{date}.csv"
+    filetemp = f"{asin}_{date}temp.csv"
+    if not os.path.exists(f"./data/{filename}"):
+        # Create an empty CSV file with the filename
+        open(f"./data/{filename}", 'w').close()
 
     # Construct the command
-    command = f"scrapy crawl amazon_reviews -a asin={asin} -a country={region} -t csv -o ./data/{filename}"
+    for stars in range(0,6):
+        print("\nFetching Reviews of " , stars , " stars\n")
+        command = f"scrapy crawl amazon_reviews -a asin={asin} -a country={region} -a stars={stars} -t csv -o ./data/{filetemp}"
 
-    # Execute the command
-    subprocess.run(command, shell=True)
+        # Execute the command
+        subprocess.run(command, shell=True)
+        
+            #if the csv file has data, append it to the filename
+        if os.path.exists(f"./data/{filetemp}") and os.path.getsize(f"./data/{filetemp}") > 0:
+            # Read the data from filetemp
+            df_temp = pd.read_csv(f"./data/{filetemp}")
+
+            # Check if the filename already exists
+            if os.path.exists(f"./data/{filename}"):
+                # Read the existing data from filename
+                
+                if os.path.exists(f"./data/{filename}") and os.path.getsize(f"./data/{filename}") > 0:
+                    df_existing = pd.read_csv(f"./data/{filename}")
+                else:
+                    df_existing = pd.DataFrame()
+
+                # Append the data from filetemp to filename
+                df_combined = pd.concat([df_existing, df_temp], ignore_index=True)
+
+                # Write the combined data back to filename
+                df_combined.to_csv(f"./data/{filename}", index=False)
+            else:
+                # Write the data from filetemp to filename
+                df_temp.to_csv(f"./data/{filename}", index=False)
+
+        # Delete the filetemp
+        if os.path.exists(f"./data/{filetemp}"):
+            os.remove(f"./data/{filetemp}")
     
     #if the csv file have data then keep it else delete it
     if (os.path.exists(f"./data/{filename}") and os.path.getsize(f"./data/{filename}") <= 0):
@@ -48,6 +81,9 @@ def extract_location_and_date(filename):
 
     # Drop the "location_and_date" column
     df.drop("location_and_date", axis=1, inplace=True)
+    
+    # Sort the DataFrame by the "date" column in ascending order
+    df.sort_values("date", inplace=True)
 
     # Write the updated dataframe back to the same CSV file
     df.to_csv(f"./data/{filename}", index=False)
@@ -105,9 +141,8 @@ def scrape_review(asin, region):
                         print(f"Deleted old file: {file}")
 
         # filename = clean_dataset(review_scrapper_script(asin, region))
-        print(f"Output: {filename}")
-        
-        return filename
+    print(f"Output: {filename}")    
+    return filename
 
 def extract_asin_and_region(url):
     #url examples:
@@ -119,7 +154,7 @@ def extract_asin_and_region(url):
     response = requests.get(url, allow_redirects=True)
     url = response.url
     # Extract the ASIN
-    asin_match = re.search(r"(?:product|dp)/([A-Z0-9]+)[/? ]", url)
+    asin_match = re.search(r"(?:product-reviews|product|dp)/([A-Z0-9]+)[/? ]", url)
     if asin_match:
         asin = asin_match.group(1)
     else:
@@ -142,10 +177,13 @@ def fetch_reviews(url):
     out = scrape_review(asin, region)
     
     end_time = time.time()
-    print(f"Total operational time: {end_time - start_time} seconds")
+    total_time = end_time - start_time
+    minutes = int(total_time // 60)
+    seconds = int(total_time % 60)
+    print(f"Total ETL Time: {minutes} minutes {seconds} seconds")
     return out
 
-
-url = input("Enter the URL: ")
-print(fetch_reviews(url))
-# print(str(fetch_reviews(url)) + " is the output")
+if __name__ == "__main__":
+    url = input("Enter the URL: ")
+    print(fetch_reviews(url))
+    # print(str(fetch_reviews(url)) + " is the output")

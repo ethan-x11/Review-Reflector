@@ -5,3 +5,11 @@ python-dotenv
 pandas
 requests
 datetime
+matplotlib
+seaborn
+scipy
+torch
+transformers
+tqdm
+sentencepiece
+protobuf
