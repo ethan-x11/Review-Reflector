@@ -29,6 +29,9 @@ def polarity_scores_roberta(text):
         scores = output[0][0].detach().numpy()
         scores = softmax(scores)
         
+        # scoredict = {"negative": scores[0], "neutral": scores[1], "positive": scores[2]}
+        # print("\n" ,text , " : ", scoredict , "\n")
+        
         max_index = np.argmax(scores)
         if max_index == 0:
             scores_dict = { 
