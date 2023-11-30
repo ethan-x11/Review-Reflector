@@ -1,5 +1,4 @@
-from langdetect import detect, detect_langs
-from translate import Translator
+from langdetect import detect
 from deep_translator import GoogleTranslator
 from tqdm import tqdm
 import pandas as pd

@@ -13,3 +13,5 @@ transformers
 tqdm
 sentencepiece
 protobuf
+langdetect
+deep_translator
