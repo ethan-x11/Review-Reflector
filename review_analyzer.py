@@ -59,9 +59,8 @@ def analyzer(url):
     else:
         sentiment_scores(out)
         translator(out)
-        
     return out
-    
+        
 
 if __name__ == "__main__":
     url = input("Enter the URL: ")
