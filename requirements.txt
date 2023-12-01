@@ -13,3 +13,8 @@ transformers
 tqdm
 sentencepiece
 protobuf
+langdetect
+deep_translator
+nltk
+pillow
+wordcloud
