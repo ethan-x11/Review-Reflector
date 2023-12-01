@@ -29,7 +29,7 @@ class AmazonReviewsSpider(scrapy.Spider):
         }
 
     def start_requests(self):
-        asin = getattr(self, 'asin', None)
+        asin = getattr(self, 'asin', None) #Amazon product serial number
         star = getattr(self, 'star', None)
         if asin is None:
             raise ValueError('Please provide an ASIN using the -a option')

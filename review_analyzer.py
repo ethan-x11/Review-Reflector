@@ -1,13 +1,27 @@
 from amazon_review import fetch_reviews
 from sentiment_analysis import review_score
 import pandas as pd
+from gtranslator import translation_loop
 
-def sentiment_scores(url):
-    try:
-        filepath = fetch_reviews(url)
-    except:
-        return "Runtime Error"
-    
+def translator(filepath):
+    df = pd.read_csv(f'./data/{filepath}')
+
+    # Check if the "label" column exists and every row has data
+    if 'translated_text' in df.columns:
+        # Check if every row has data in the "label" column
+        if df['translated_text'].notnull().values.any():
+            print('Translated text values already exists')
+            return filepath
+    text_list = df['text'].tolist()
+    translated = translation_loop(text_list)
+    df['translated_text'] = [translated[i] for i in range(len(translated))]
+
+    # Save the DataFrame back to the CSV file
+    df.to_csv(f'./data/{filepath}', index=False)
+    # print(translated)
+    return "Success!"
+
+def sentiment_scores(filepath):
     if not filepath:
         return "Error"
     else:
@@ -33,9 +47,21 @@ def sentiment_scores(url):
         df.to_csv(f'./data/{filepath}', index=False)
         
     return filepath
-        
+
+def analyzer(url):
+    try:
+        out = fetch_reviews(url)
+    except:
+        return "Runtime Error"
     
+    if not out:
+        return "Error"
+    else:
+        sentiment_scores(out)
+        translator(out)
+    return out
+        
 
 if __name__ == "__main__":
     url = input("Enter the URL: ")
-    print(sentiment_scores(url))
+    print(analyzer(url))
