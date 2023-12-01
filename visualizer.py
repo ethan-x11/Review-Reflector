@@ -9,6 +9,7 @@ from nltk.tokenize import word_tokenize
 from wordcloud import WordCloud
 from PIL import Image
 import numpy as np
+from word_cloud import generate_wordcloud
 
 plt.style.use('ggplot')
 
@@ -74,8 +75,15 @@ def Reviews(df):
 
     return res
 
-def word_cloud(df):
-    return
+def generate_wordcloud(df):
+    thumbs_up = './Images/thumbs-up.png'
+    thumbs_down = './Images/thumbs-down.png'
+    positive_reviews_list = df.loc[df['label'] == 'positive', ['translated_text']]['translated_text'].tolist()
+    negative_reviews_list = df.loc[df['label'] == 'negative', ['translated_text']]['translated_text'].tolist()
+    pos_fig = generate_wordcloud(positive_reviews_list,thumbs_up)
+    neg_fig = generate_wordcloud(negative_reviews_list,thumbs_down)
+    res = {'positive': pos_fig, 'negative': neg_fig}
+    return res
 
 def visualization(filepath):
     df = pd.read_csv(f'./data/{filepath}')
@@ -84,9 +92,14 @@ def visualization(filepath):
     Scores = ScoreGraph(df)
     Ratings = RatingGraph(df)
     Rev = Reviews(df)
-    wc = word_cloud(df)
+    wc = generate_wordcloud(df)
     
-    out = {'ScoreGraph': Scores, 'RatingGraph': Ratings, 'Reviews': Rev}
+    out = {
+            'ScoreGraph': Scores, 
+            'RatingGraph': Ratings,
+            'wordcloud': wc, 
+            'Reviews': Rev,
+        }
     
     # print(out)
     
