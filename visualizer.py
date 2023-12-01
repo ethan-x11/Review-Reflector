@@ -66,17 +66,16 @@ def Reviews(df):
     Top_negative_review = Top_negative_review[['date', 'title', 'text', 'location']].reset_index(drop=True)
     Top_negative_review = Top_negative_review.head(10).to_dict(orient='index')
     
-    Critical_Positive = df.loc[(df['label'] == 'positive')]
-    Critical_Positive.sort_values(by='score', ascending=False, inplace=True)
-    Critical_Positive = Critical_Positive[['date', 'title','text', 'rating', 'location']].head(1).reset_index(drop=True).to_dict(orient='records')[0]
-    # print(Critical_Positive)
-    Critical_Negative = df.loc[(df['label'] == 'negative')]
-    Critical_Negative.sort_values(by='score', ascending=False, inplace=True)
-    Critical_Negative = Critical_Negative [['date', 'title','text', 'rating', 'location' ]].head(1).reset_index(drop=True).to_dict(orient='records')[0]
+    Critical = df.loc[(df['label'] == 'negative')]
+    Critical.sort_values(by='score', ascending=False, inplace=True)
+    Critical = Critical [['date', 'title','text', 'rating', 'location' ]].head(1).reset_index(drop=True).to_dict(orient='records')[0]
     
-    res = {'Critical_Reviews':{'Positive':Critical_Positive, 'Negative':Critical_Negative}, 'Top_Reviews':{'Positive':Top_positive_review, 'Negative':Top_negative_review} }
+    res = {'Critical_Reviews': Critical, 'Top_Reviews':{'Positive':Top_positive_review, 'Negative':Top_negative_review} }
 
     return res
+
+def word_cloud(df):
+    return
 
 def visualization(filepath):
     df = pd.read_csv(f'./data/{filepath}')
@@ -85,6 +84,7 @@ def visualization(filepath):
     Scores = ScoreGraph(df)
     Ratings = RatingGraph(df)
     Rev = Reviews(df)
+    wc = word_cloud(df)
     
     out = {'ScoreGraph': Scores, 'RatingGraph': Ratings, 'Reviews': Rev}
     

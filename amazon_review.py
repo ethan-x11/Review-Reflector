@@ -21,7 +21,7 @@ def review_scrapper_script(asin, region):
     # Construct the command
     for stars in range(0,6):
         print("\nFetching Reviews of " , stars , " stars\n")
-        command = f"scrapy crawl amazon_reviews -a asin={asin} -a country={region} -a stars={stars} -t csv -o ./data/{filetemp}"
+        command = f"scrapy crawl amazon_reviews -a asin={asin} -a region={region} -a stars={stars} -t csv -o ./data/{filetemp}"
 
         # Execute the command
         subprocess.run(command, shell=True)
@@ -163,8 +163,8 @@ def extract_asin_and_region(url):
     # Extract the country
     amazon_index = url.find("amazon.")
     first_slash_index = url.find("/", amazon_index)
-    regions = {"in": "india", "com": "america", "co.uk": "british"}
-    region = regions[url[amazon_index + len("amazon."):first_slash_index]]
+    # regions = {"in": "india", "com": "america", "co.uk": "british"}
+    region = url[amazon_index + len("amazon."):first_slash_index]
     
     return asin, region
 

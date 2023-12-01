@@ -6,23 +6,13 @@ from scipy.special import softmax
 from tqdm import tqdm
 
 
-print("\nLoading Model...")
-# MODEL = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
-MODEL = f"cardiffnlp/twitter-xlm-roberta-base-sentiment"
-tokenizer = AutoTokenizer.from_pretrained(MODEL)
-config = AutoConfig.from_pretrained(MODEL)
-model = AutoModelForSequenceClassification.from_pretrained(MODEL)
-tokenizer.save_pretrained(MODEL)
-model.save_pretrained(MODEL)
-print("Model Loading Success\n")
-
 # Set default label as "null" and score as 0
 default_scores_dict = {
     'label': 'null',
     'score': 0
 }
     
-def polarity_scores_roberta(text):    
+def polarity_scores_roberta(text,tokenizer,model):    
     try:
         encoded_text = tokenizer(text, return_tensors='pt')
         output = model(**encoded_text)
@@ -55,13 +45,23 @@ def polarity_scores_roberta(text):
     return scores_dict
 
 def review_score(textlist):
+    print("\nLoading Model...")
+    # MODEL = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
+    MODEL = f"cardiffnlp/twitter-xlm-roberta-base-sentiment"
+    tokenizer = AutoTokenizer.from_pretrained(MODEL)
+    config = AutoConfig.from_pretrained(MODEL)
+    model = AutoModelForSequenceClassification.from_pretrained(MODEL)
+    tokenizer.save_pretrained(MODEL)
+    model.save_pretrained(MODEL)
+    print("Model Loading Success\n")
+    
     res = {}
     print("Calculating Scores...")
     df = pd.DataFrame({'Text': textlist})
     for i, texts in tqdm(df.iterrows(), total=len(df)):
         try:
             text = texts['Text']
-            scores_dict = polarity_scores_roberta(text)
+            scores_dict = polarity_scores_roberta(text,tokenizer,model)
             res[i] = scores_dict
         except RuntimeError:
             print(f'\nBroke for id {i}')

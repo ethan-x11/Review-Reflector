@@ -1,13 +1,30 @@
 from review_analyzer import analyzer
 from visualizer import visualization
+import time
 
-url = input("Enter URL: ")
-out = analyzer(url)
+def execute(url):
+    start_time = time.time()
+    out = analyzer(url)
 
-if out:
-    print("Success!")
-    print("Generating graphs...")
-    print(visualization(out))
+    if out not in [False, 'Runtime Error']:
+        print("Generating visualizations...")
+        res = visualization(out)
+    else:
+        res = "Error"
+        
+    end_time = time.time()
+    total_time = end_time - start_time
+    minutes = int(total_time // 60)
+    seconds = int(total_time % 60)
+    print(f"Total Operational Time: {minutes} minutes {seconds} seconds")
     
-else:
-    print("Error!")
+    return res
+    
+if __name__ == "__main__":
+    url = input("Enter URL: ")
+    res = execute(url)
+    print("\n\n\n", res)
+    print(res['ScoreGraph']['positive'])
+    import matplotlib.pyplot as plt
+
+    res['ScoreGraph']['positive'].show()

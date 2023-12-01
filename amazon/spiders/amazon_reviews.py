@@ -5,16 +5,16 @@ from urllib.parse import urljoin
 class AmazonReviewsSpider(scrapy.Spider):
     name = "amazon_reviews"
 
-    def __init__(self, country='', stars='6' , *args, **kwargs):
+    def __init__(self, region='', stars='6' , *args, **kwargs):
         super(AmazonReviewsSpider, self).__init__(*args, **kwargs)
-        self.country = country.lower()
+        self.region = region.lower()
         
-        countrydict = {"india": 'https://www.amazon.in', "america": 'https://www.amazon.com', "british": 'https://www.amazon.co.uk'}
+        # countrydict = {"india": 'https://www.amazon.in', "america": 'https://www.amazon.com', "british": 'https://www.amazon.co.uk'}
 
         try:
-            self.base_url = countrydict[self.country]
+            self.base_url = f'https://www.amazon.{self.region}'
         except:
-            raise ValueError('Invalid country provided. Please provide a valid country (india/america/british) using the -a option')
+            raise ValueError('Invalid region provided. Please provide a valid region (india/america/british) using the -a option')
         
         stardict = {0:"all_stars", 5:"five_star", 4:"four_star", 3:"three_star", 2:"two_star", 1:"one_star"}
         
