@@ -18,3 +18,5 @@ deep_translator
 nltk
 pillow
 wordcloud
+fastapi
+uvicorn
