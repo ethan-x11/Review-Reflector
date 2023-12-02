@@ -1,22 +1,11 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
-import nltk
-from nltk.corpus import opinion_lexicon
-from nltk.stem import SnowballStemmer
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-from wordcloud import WordCloud
-from PIL import Image
-import numpy as np
-from word_cloud import generate_wordcloud
+import base64
+from io import BytesIO
+from wordcloud_list import generate_wordcloud
 
 plt.style.use('ggplot')
-
-# nltk.download('punkt')
-# nltk.download('stopwords')
-# nltk.download('opinion_lexicon')
-
 
 def ScoreGraph(df):
     positive_score = df.loc[df['label'] == 'positive', ['date', 'score']]
@@ -41,7 +30,17 @@ def ScoreGraph(df):
     plt.title('Negative Score Graph', fontsize=20, color='green', fontweight='bold' )
     plt.xticks(rotation=90)
     plt.gca().set_xticklabels([])
-    return {'positive': pos_fig, 'negative': neg_fig}
+    
+    tmpfile = BytesIO()
+    pos_fig.savefig(tmpfile, format='png')
+    pos_fig_base64= base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+    pos_fig_png = '\'data:image/png;base64,{}\''.format(pos_fig_base64)
+    
+    neg_fig.savefig(tmpfile, format='png')
+    neg_fig_base64= base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+    neg_fig_png = '\'data:image/png;base64,{}\''.format(neg_fig_base64)
+    
+    return {'positive': pos_fig_png, 'negative': neg_fig_png}
 
 def RatingGraph(df):
     ratingVSdate = df[['date', 'rating']]
@@ -54,7 +53,11 @@ def RatingGraph(df):
     plt.title('Rating VS Date', fontsize=20, color='green', fontweight='bold' )
     plt.xticks(rotation=90)
     plt.gca().set_xticklabels([])
-    return rating_fig
+    tmpfile = BytesIO()
+    rating_fig.savefig(tmpfile, format='png')
+    rating_fig_base64= base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+    rating_fig_png = '\'data:image/png;base64,{}\''.format(rating_fig_base64)
+    return rating_fig_png
 
 def Reviews(df):
     Top_positive_review = df.loc[(df['label'] == 'positive') & (df['rating'] == 5.0)]
@@ -75,14 +78,25 @@ def Reviews(df):
 
     return res
 
-def generate_wordcloud(df):
+def fetch_wordcloud(df):
     thumbs_up = './Images/thumbs-up.png'
     thumbs_down = './Images/thumbs-down.png'
     positive_reviews_list = df.loc[df['label'] == 'positive', ['translated_text']]['translated_text'].tolist()
     negative_reviews_list = df.loc[df['label'] == 'negative', ['translated_text']]['translated_text'].tolist()
     pos_fig = generate_wordcloud(positive_reviews_list,thumbs_up)
     neg_fig = generate_wordcloud(negative_reviews_list,thumbs_down)
-    res = {'positive': pos_fig, 'negative': neg_fig}
+    
+    tmpfile = BytesIO()
+    pos_fig.savefig(tmpfile, format='png')
+    pos_fig_base64= base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+    pos_fig_png = '\'data:image/png;base64,{}\''.format(pos_fig_base64)
+    
+    neg_fig.savefig(tmpfile, format='png')
+    neg_fig_base64= base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+    neg_fig_png = '\'data:image/png;base64,{}\''.format(neg_fig_base64)
+    
+    res = {'positive': pos_fig_png, 'negative': neg_fig_png}
+    
     return res
 
 def visualization(filepath):
@@ -92,7 +106,7 @@ def visualization(filepath):
     Scores = ScoreGraph(df)
     Ratings = RatingGraph(df)
     Rev = Reviews(df)
-    wc = generate_wordcloud(df)
+    wc = fetch_wordcloud(df)
     
     out = {
             'ScoreGraph': Scores, 
@@ -108,4 +122,13 @@ def visualization(filepath):
 
 
 if __name__ == "__main__":
-    visualization(filepath='B09G9FPHY6_2023-12-01.csv')
+    out = visualization(filepath='B09G9FPHY6_2023-12-01.csv')
+    print(out)
+    import sys
+    size_kb = sys.getsizeof(out)
+    print(f"Size: {size_kb*10} KB")
+    # plt.show()
+    import json
+    # Save out to a JSON file
+    with open('./data/output.json', 'w') as file:
+        json.dump(out, file)

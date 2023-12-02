@@ -24,7 +24,6 @@ if __name__ == "__main__":
     url = input("Enter URL: ")
     res = execute(url)
     print("\n\n\n", res)
-    print(res['ScoreGraph']['positive'])
-    import matplotlib.pyplot as plt
+    # print(res['ScoreGraph']['positive'])
 
-    res['ScoreGraph']['positive'].show()
+    # res['ScoreGraph']['positive'].show()
