@@ -46,13 +46,17 @@ def RatingGraph(df):
     ratingVSdate = df[['date', 'rating']]
     rating_fig = plt.figure(figsize=(20, 4))
     sns.set(style="whitegrid")
-    sns.lineplot(x='date', y='rating', data=ratingVSdate, color='green', errorbar=None, label='Line', linestyle='--', marker='o')
-    # sns.barplot(x='date', y='rating', data=ratingVSdate,errorbar=None, hue='date', legend=False, alpha=0.7, palette=sns.color_palette("crest", n_colors=len(ratingVSdate)//2))
+    # Calculate the rolling mean of ratings
+    rolling_mean = ratingVSdate['rating'].rolling(window=7).mean()
+    # Plot the rolling mean as a smooth trend line
+    sns.lineplot(x='date', y=rolling_mean, data=ratingVSdate, color='green', label='Smooth Trend')
     plt.xlabel('Time', fontsize=14, labelpad=10, color='green', fontweight='bold')
-    plt.ylabel('Rating',fontsize=14, labelpad=10, color='green', fontweight='bold')
-    plt.title('Rating VS Date', fontsize=20, color='green', fontweight='bold' )
+    plt.ylabel('Rating', fontsize=14, labelpad=10, color='green', fontweight='bold')
+    plt.title('Rating VS Date', fontsize=20, color='green', fontweight='bold')
     plt.xticks(rotation=90)
     plt.gca().set_xticklabels([])
+    plt.yticks([1, 2, 3, 4, 5])
+    
     tmpfile = BytesIO()
     rating_fig.savefig(tmpfile, format='png')
     rating_fig_base64= base64.b64encode(tmpfile.getvalue()).decode('utf-8')
