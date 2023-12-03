@@ -21,3 +21,4 @@ wordcloud
 fastapi
 uvicorn
 gunicorn
+requests-html

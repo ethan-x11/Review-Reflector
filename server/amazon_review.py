@@ -1,56 +1,20 @@
-import subprocess
 import datetime
 import time
 import os
 import datetime
 import pandas as pd
 import re
-import datetime
 import requests
+from amazon_review_scrapper import ReviewsScraper
 
 def review_scrapper_script(asin, region):
     # Construct the filename with the current date
     date = datetime.datetime.now().strftime("%Y-%m-%d")
     filename = f"{asin}_{date}.csv"
-    filetemp = f"{asin}_{date}temp.csv"
-    if not os.path.exists(f"./data/{filename}"):
-        # Create an empty CSV file with the filename
-        open(f"./data/{filename}", 'w').close()
-
-    # Construct the command
-    for stars in range(0,6):
-        print("\nFetching Reviews of " , stars , " stars\n")
-        command = f"scrapy crawl amazon_reviews -a asin={asin} -a region={region} -a stars={stars} -t csv -o ./data/{filetemp}"
-
-        # Execute the command
-        subprocess.run(command, shell=True)
-        
-            #if the csv file has data, append it to the filename
-        if os.path.exists(f"./data/{filetemp}") and os.path.getsize(f"./data/{filetemp}") > 0:
-            # Read the data from filetemp
-            df_temp = pd.read_csv(f"./data/{filetemp}")
-
-            # Check if the filename already exists
-            if os.path.exists(f"./data/{filename}"):
-                # Read the existing data from filename
-                
-                if os.path.exists(f"./data/{filename}") and os.path.getsize(f"./data/{filename}") > 0:
-                    df_existing = pd.read_csv(f"./data/{filename}")
-                else:
-                    df_existing = pd.DataFrame()
-
-                # Append the data from filetemp to filename
-                df_combined = pd.concat([df_existing, df_temp], ignore_index=True)
-
-                # Write the combined data back to filename
-                df_combined.to_csv(f"./data/{filename}", index=False)
-            else:
-                # Write the data from filetemp to filename
-                df_temp.to_csv(f"./data/{filename}", index=False)
-
-        # Delete the filetemp
-        if os.path.exists(f"./data/{filetemp}"):
-            os.remove(f"./data/{filetemp}")
+    
+    scraper = ReviewsScraper(asin=asin, region = region)
+    all_reviews = scraper.iterate_over_pages()
+    scraper.save_to_file(reviews= all_reviews, filepath=f"./data/{filename}")
     
     #if the csv file have data then keep it else delete it
     if (os.path.exists(f"./data/{filename}") and os.path.getsize(f"./data/{filename}") <= 0):
