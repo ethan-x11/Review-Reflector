@@ -12,5 +12,6 @@ def predict(request: schemas.Load):
         url=request.aurl
     )
     # output = {"Meow"}
-
+    if str(output) in [False, "Error", "False", "Runtime Error"]:
+        print("Output:",output)
     return output
