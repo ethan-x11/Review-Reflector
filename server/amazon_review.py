@@ -2,7 +2,6 @@ import subprocess
 import datetime
 import time
 import os
-import os
 import datetime
 import pandas as pd
 import re
