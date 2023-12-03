@@ -20,3 +20,4 @@ pillow
 wordcloud
 fastapi
 uvicorn
+gunicorn
