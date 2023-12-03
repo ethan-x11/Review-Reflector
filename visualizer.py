@@ -44,17 +44,25 @@ def ScoreGraph(df):
 
 def RatingGraph(df):
     ratingVSdate = df[['date', 'rating']]
+    ratingVSdate = df[['date', 'rating']]
+    ratingVSdate.loc[:, 'date'] = pd.to_datetime(ratingVSdate['date'])
+    ratingVSdate = ratingVSdate.groupby('date').mean().reset_index()
+    # Filter the data for the last available date and 365 days before that
+    last_date = ratingVSdate['date'].max()
+    start_date = last_date - pd.DateOffset(days=365)
+    filtered_data = ratingVSdate[(ratingVSdate['date'] >= start_date) & (ratingVSdate['date'] <= last_date)]
+
     rating_fig = plt.figure(figsize=(20, 4))
     sns.set(style="whitegrid")
     # Calculate the rolling mean of ratings
-    rolling_mean = ratingVSdate['rating'].rolling(window=7).mean()
+    rolling_mean = filtered_data['rating'].rolling(window=7).mean()
     # Plot the rolling mean as a smooth trend line
-    sns.lineplot(x='date', y=rolling_mean, data=ratingVSdate, color='green', label='Smooth Trend')
+    sns.lineplot(x='date', y='rating', data=filtered_data, color='green', label='Smooth Trend')
     plt.xlabel('Time', fontsize=14, labelpad=10, color='green', fontweight='bold')
     plt.ylabel('Rating', fontsize=14, labelpad=10, color='green', fontweight='bold')
     plt.title('Rating VS Date', fontsize=20, color='green', fontweight='bold')
     plt.xticks(rotation=90)
-    plt.gca().set_xticklabels([])
+    # plt.gca().set_xticklabels([])
     plt.yticks([1, 2, 3, 4, 5])
     
     tmpfile = BytesIO()

@@ -102,6 +102,8 @@ def clean_dataset(filename):
     if df.empty:
         return "Empty df"
 
+    df['rating'] = df['rating'].astype(int)
+    
     # Clean the "text" column
     df["text"] = df["text"].str.replace(r'^The media could not be loaded\.\s*', '', regex=True)
 
@@ -186,4 +188,4 @@ def fetch_reviews(url):
 if __name__ == "__main__":
     url = input("Enter the URL: ")
     print(fetch_reviews(url))
-    # print(str(fetch_reviews(url)) + " is the output")
+    print(str(fetch_reviews(url)) + " is the output")

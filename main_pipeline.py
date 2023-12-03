@@ -2,7 +2,7 @@ from review_analyzer import analyzer
 from visualizer import visualization
 import time
 
-def execute(url):
+def execute_pipeline(url):
     start_time = time.time()
     out = analyzer(url)
 
@@ -22,7 +22,7 @@ def execute(url):
     
 if __name__ == "__main__":
     url = input("Enter URL: ")
-    res = execute(url)
+    res = execute_pipeline(url)
     print("\n\n\n", res)
     # print(res['ScoreGraph']['positive'])
 
