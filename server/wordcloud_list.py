@@ -11,9 +11,9 @@ import matplotlib.pyplot as plt
 
 plt.style.use('ggplot')
 
-# nltk.download('punkt')
-# nltk.download('stopwords')
-# nltk.download('opinion_lexicon')
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('opinion_lexicon')
 
 def generate_wordcloud(data,figure):
     word= []
@@ -53,7 +53,7 @@ def generate_wordcloud(data,figure):
     return fig
 
 if __name__ == '__main__':
-    df = pd.read_csv('./data/B09G9FPHY6_2023-12-01.csv')
+    df = pd.read_csv('./data/B09G9FPHY6_2023-12-04.csv')
     data = df.loc[df['label'] == 'positive', ['translated_text']]['translated_text'].tolist()
     out = generate_wordcloud(data,'./Images/thumbs-up.png')
     out.show()
