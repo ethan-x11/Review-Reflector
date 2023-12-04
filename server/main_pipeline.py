@@ -23,7 +23,18 @@ def execute_pipeline(url):
 if __name__ == "__main__":
     url = input("Enter URL: ")
     res = execute_pipeline(url)
-    print("\n\n\n", res)
+
+    import json
+    import os
+    # Save res dict to output.json in ./data/
+    output_dir = "./Output"
+    os.makedirs(output_dir, exist_ok=True)
+    output_file = os.path.join(output_dir, "output.json")
+    with open(output_file, "w") as f:
+        json.dump(res, f)
+
+    # print("\n\n\n", res)
     # print(res['ScoreGraph']['positive'])
 
     # res['ScoreGraph']['positive'].show()
+    

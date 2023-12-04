@@ -9,7 +9,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SCRAPEOPS_API_KEY = os.getenv('API_KEY')
+SCRAPEOPS_API_KEY = os.getenv('SCRAPEOPS_API_KEY')
+SCRAPERAPI_API_KEY = os.getenv('SCRAPERAPI_API_KEY')
 
 def get_headers_list():
     response = requests.get('http://headers.scrapeops.io/v1/browser-headers?api_key=' + SCRAPEOPS_API_KEY)
@@ -21,8 +22,10 @@ def get_random_header(header_list):
     return header_list[random_index]
 
 def scrapeops_url(url):
-    payload = {'api_key': SCRAPEOPS_API_KEY, 'url': url}
-    proxy_url = 'https://proxy.scrapeops.io/v1/?' + urlencode(payload)
+    payload = {'api_key': SCRAPERAPI_API_KEY, 'url': url, 'render': 'true', 'premium': 'true'}
+    proxy_url = 'http://api.scraperapi.com/?' + urlencode(payload)
+    # payload = {'api_key': SCRAPEOPS_API_KEY, 'url': url, 'render': 'true'}
+    # proxy_url = 'https://proxy.scrapeops.io/v1/?' + urlencode(payload)
     return proxy_url
 
 
@@ -41,7 +44,7 @@ class ReviewsScraper:
         self.asin = asin
         self.region = region.lower()
         self.base_url = f'https://www.amazon.{self.region}/product-reviews/{self.asin}/'
-        # self.session = HTMLSession()
+        self.session = HTMLSession()
 
     def get_reviews_from_page(self, page_content: int) -> List[dict]:
         reviews = []
@@ -78,17 +81,17 @@ class ReviewsScraper:
         for star in range(0,6):
             star_val = stardict[star]
             retry_count = 0
-            print(f"\nStar: {star_val}")
+            print(f"\nRating: {star_val}")
             i = 1
             while i <= 10:
                 print(f"Page: {i}")
                 amazon_reviews_url = f'{self.base_url}?sortBy=recent&filterByStar={star_val}&pageNumber={i}'
-                session = HTMLSession()
+                # session = HTMLSession()
                 header_list = get_headers_list()
                 fheader = get_random_header(header_list)
                 final_header = {**fheader, **self.headers}
                 # print(final_header)
-                r = session.get(scrapeops_url(amazon_reviews_url), headers=final_header)
+                r = self.session.get(scrapeops_url(amazon_reviews_url), headers=final_header)
                 if self.has_reviews(r.html):
                     new_reviews = self.get_reviews_from_page(r.html)
                     # print("New reviews")
@@ -118,9 +121,10 @@ class ReviewsScraper:
 
 if __name__ == '__main__':
     # asin = 'B0B3N94THK'
-    asin = 'B09G9FPHY6'
+    asin = input('asin: ')
+    region = input('region: ')
     # asin = 'B09G9FPH6'
-    scraper = ReviewsScraper(asin=asin, region = "com")
+    scraper = ReviewsScraper(asin=asin, region = region)
     all_reviews = scraper.iterate_over_pages()
     print("Done.")
     print(all_reviews)

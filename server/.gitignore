@@ -8,3 +8,5 @@ data
 test.py
 cardiffnlp
 sentiment-analysis.ipynb
+output
+amazon_review_.py

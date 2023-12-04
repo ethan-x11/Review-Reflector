@@ -11,7 +11,7 @@ NEWSPIDER_MODULE = 'amazon.spiders'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
-SCRAPEOPS_API_KEY = os.getenv('API_KEY')
+SCRAPEOPS_API_KEY = os.getenv('SCRAPEOPS_API_KEY')
 
 SCRAPEOPS_PROXY_ENABLED = True
 # SCRAPEOPS_PROXY_SETTINGS = {'country': 'us'}
