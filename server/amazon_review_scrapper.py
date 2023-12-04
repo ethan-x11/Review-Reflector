@@ -95,7 +95,7 @@ class ReviewsScraper:
                     # print(new_reviews)
                     reviews += new_reviews
                     retry_count = 0
-                elif retry_count < 3:
+                elif retry_count < 1:
                     retry_count += 1
                     print("Retrying previous page")
                     i -= 1
