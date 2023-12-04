@@ -80,18 +80,19 @@ class ReviewsScraper:
         return reviews
 
     def save_to_file(self, reviews: List[dict], filepath: str):
-        fieldnames = ['asin', 'title', 'rating', 'text', 'verified', 'location_and_date']
-        df = pd.DataFrame(reviews)
-        df['asin'] = self.asin  # Add asin value to each row
-        df = df[fieldnames]
-        df.to_csv(filepath, index=False)
+        if reviews:
+            fieldnames = ['asin', 'title', 'rating', 'text', 'verified', 'location_and_date']
+            df = pd.DataFrame(reviews)
+            df['asin'] = self.asin  # Add asin value to each row
+            df = df[fieldnames]
+            df.to_csv(filepath, index=False)
 
 
 
 if __name__ == '__main__':
-    asin = 'B09G9FPHY6'
+    asin = 'B0B3N94THK'
     # asin = 'B09G9FPH6'
-    scraper = ReviewsScraper(asin=asin, region = "com")
+    scraper = ReviewsScraper(asin=asin, region = "in")
     all_reviews = scraper.iterate_over_pages()
     print("Done.")
     print(all_reviews)

@@ -54,8 +54,6 @@ def extract_location_and_date(filename):
     # Return the filename of the updated file
     return filename
 
-
-
 def clean_dataset(filename):
     print("Cleaning Dataset")
     # Load the CSV file using pandas
@@ -100,7 +98,7 @@ def scrape_review(asin, region):
             # Check if a file with the same name and an old date exists
             for file in os.listdir("./data/"):
                 if file.startswith(asin) and file.endswith(".csv"):
-                    file_date = file.split("_")[1].split(".")[0]
+                    file_date = re.search(r"\d{4}-\d{2}-\d{2}", filename).group()
                     if file_date < date:
                         os.remove(os.path.join("./data/", file))
                         print(f"Deleted old file: {file}")
