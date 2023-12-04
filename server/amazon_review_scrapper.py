@@ -1,8 +1,19 @@
 from requests_html import HTMLSession, HTML
 from typing import List
 import pandas as pd
-import csv
+import requests
+from random import randint
 
+SCRAPEOPS_API_KEY = '1341c44f-7ee5-4797-8660-b2c6c1f5ce0b'
+
+def get_headers_list():
+    response = requests.get('http://headers.scrapeops.io/v1/browser-headers?api_key=' + SCRAPEOPS_API_KEY)
+    json_response = response.json()
+    return json_response.get('result', [])
+
+def get_random_header(header_list):
+    random_index = randint(0, len(header_list) - 1)
+    return header_list[random_index]
 class ReviewsScraper:
     def __init__(self, asin: str, region: str , *args, **kwargs):
         self.headers = {
@@ -61,6 +72,10 @@ class ReviewsScraper:
                 print(f"Page: {i}")
                 amazon_reviews_url = f'{self.base_url}?sortBy=recent&filterByStar={star_val}&pageNumber={i}'
                 session = HTMLSession()
+                header_list = get_headers_list()
+                fheader = get_random_header(header_list)
+                final_header = {**fheader, **self.headers}
+                # print(final_header)
                 r = session.get(f'{amazon_reviews_url}', headers=self.headers)
                 if self.has_reviews(r.html):
                     new_reviews = self.get_reviews_from_page(r.html)
@@ -90,9 +105,10 @@ class ReviewsScraper:
 
 
 if __name__ == '__main__':
-    asin = 'B0B3N94THK'
+    # asin = 'B0B3N94THK'
+    asin = 'B09G9FPHY6'
     # asin = 'B09G9FPH6'
-    scraper = ReviewsScraper(asin=asin, region = "in")
+    scraper = ReviewsScraper(asin=asin, region = "com")
     all_reviews = scraper.iterate_over_pages()
     print("Done.")
     print(all_reviews)
