@@ -3,8 +3,13 @@ from typing import List
 import pandas as pd
 import requests
 from random import randint
+from urllib.parse import urlencode, urljoin
+import os
+from dotenv import load_dotenv
 
-SCRAPEOPS_API_KEY = '1341c44f-7ee5-4797-8660-b2c6c1f5ce0b'
+load_dotenv()
+
+SCRAPEOPS_API_KEY = os.getenv('API_KEY')
 
 def get_headers_list():
     response = requests.get('http://headers.scrapeops.io/v1/browser-headers?api_key=' + SCRAPEOPS_API_KEY)
@@ -14,6 +19,13 @@ def get_headers_list():
 def get_random_header(header_list):
     random_index = randint(0, len(header_list) - 1)
     return header_list[random_index]
+
+def scrapeops_url(url):
+    payload = {'api_key': SCRAPEOPS_API_KEY, 'url': url}
+    proxy_url = 'https://proxy.scrapeops.io/v1/?' + urlencode(payload)
+    return proxy_url
+
+
 class ReviewsScraper:
     def __init__(self, asin: str, region: str , *args, **kwargs):
         self.headers = {
@@ -76,7 +88,7 @@ class ReviewsScraper:
                 fheader = get_random_header(header_list)
                 final_header = {**fheader, **self.headers}
                 # print(final_header)
-                r = session.get(f'{amazon_reviews_url}', headers=self.headers)
+                r = session.get(scrapeops_url(amazon_reviews_url), headers=final_header)
                 if self.has_reviews(r.html):
                     new_reviews = self.get_reviews_from_page(r.html)
                     # print("New reviews")
