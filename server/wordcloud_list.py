@@ -11,9 +11,9 @@ import matplotlib.pyplot as plt
 
 plt.style.use('ggplot')
 
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('opinion_lexicon')
+# nltk.download('punkt')
+# nltk.download('stopwords')
+# nltk.download('opinion_lexicon')
 
 def generate_wordcloud(data,figure):
     word= []
