@@ -126,21 +126,21 @@ def scrape_review(asin, region):
     date = datetime.datetime.now().strftime("%Y-%m-%d")
     filename = f"{asin}_{date}.csv"
     filepath = os.path.join("./data/", filename)
-    clean_dataset(filename)
+    # clean_dataset(filename)
     # Check if the file already exists and has data
-    # if os.path.exists(filepath) and os.path.getsize(filepath) > 0:
-    #     print(f"File {filename} already exists and has data.")
-    # else:
-    #     filename = review_scrapper_script(asin, region)
-    #     if(filename):
-    #         clean_dataset(filename)
-    #         # Check if a file with the same name and an old date exists
-    #         for file in os.listdir("./data/"):
-    #             if file.startswith(asin) and file.endswith(".csv"):
-    #                 file_date = file.split("_")[1].split(".")[0]
-    #                 if file_date < date:
-    #                     os.remove(os.path.join("./data/", file))
-    #                     print(f"Deleted old file: {file}")
+    if os.path.exists(filepath) and os.path.getsize(filepath) > 0:
+        print(f"File {filename} already exists and has data.")
+    else:
+        filename = review_scrapper_script(asin, region)
+        if(filename):
+            clean_dataset(filename)
+            # Check if a file with the same name and an old date exists
+            for file in os.listdir("./data/"):
+                if file.startswith(asin) and file.endswith(".csv"):
+                    file_date = file.split("_")[1].split(".")[0]
+                    if file_date < date:
+                        os.remove(os.path.join("./data/", file))
+                        print(f"Deleted old file: {file}")
 
         # filename = clean_dataset(review_scrapper_script(asin, region))
     print(f"Output: {filename}")    

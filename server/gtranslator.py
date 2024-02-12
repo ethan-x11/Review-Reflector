@@ -6,7 +6,10 @@ import pandas as pd
 
 # Simple function to detect and translate text
 def detect_and_translate(text, target_lang='en'):
-    result_lang = detect(text)
+    try:
+        result_lang = detect(text)
+    except:
+        result_lang = target_lang
     
     if result_lang == target_lang:
         return text
