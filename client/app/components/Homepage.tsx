@@ -2,12 +2,8 @@
 import React, { useEffect, useState } from 'react'
 import { FaSpinner } from 'react-icons/fa';
 import HeroSection from '@/app/components/HeroSection'
-import ContactSection from '@/app/components/ContactSection'
-import Courses from '@/app/components/Homepage/Courses'
-import Quote from '@/app/components/Homepage/Quote'
-import PointersUs from '@/app/components/Homepage/PointersUs'
-import Announcement from '@/app/components/Homepage/Announcement'
-import Gallery from '@/app/components/Gallery';
+import FormSection from '@/app/components/FormSection'
+import About from './About';
 
 const style = {
     main: '',
@@ -33,12 +29,8 @@ const Homepage = () => {
             ) : (
                 <>
                     <HeroSection />
-                    <Announcement />
-                    <Courses />
-                    <PointersUs />
-                    <Gallery />
-                    <ContactSection />
-                    <Quote />
+                    <FormSection />
+                    <About />
                 </>
             )} 
         </>

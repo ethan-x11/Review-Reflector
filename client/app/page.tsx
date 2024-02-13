@@ -6,7 +6,6 @@ import Homepage from '@/app/components/Homepage'
 import About from '@/app/components/About'
 import ThemeSwitchButton from '@/app/components/ThemeSwitchButton';
 import Footer from '@/app/components/Footer';
-import WhatsappButton from '@/app/components/WhatsappButton';
 
 const styles = {
   main: '',
@@ -51,7 +50,6 @@ export default function Home() {
       {renderSection()}
       <Footer />
       <ThemeSwitchButton />
-      <WhatsappButton phoneNumber="917003626799" />
     </main>
     </>
   )
