@@ -10,15 +10,22 @@ const style = {
 }
 
 const FormSection = () => {
-  const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    fetchurl();
-  })
+  const [formData, setFormData] = useState({
+    aurl: '',
+    email: ''
+  });
 
-  const fetchurl = async () => {
-    const url = "https://144ccce3-935c-4085-af86-6ccfaa8cee00-00-36n6naik0hkiu.picard.replit.dev/fetch";
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const fetchdata = async () => {
+    const url = "https://review-reflector-server.onrender.com/amazon";
     axios.defaults.headers.post["Content-Type"] =
       "application/json;charset=utf-8";
     axios.defaults.headers.post["Bypass-Tunnel-Reminder"] = "1";
@@ -26,43 +33,52 @@ const FormSection = () => {
     try {
       const { data } = await axios.post(
         url,
-        {
-          name:"BTC",
-          cur:"INR",
-        }
+        JSON.stringify(formData)
       );
       console.log(data);
     } catch (error) {
       console.error(error);
     }
   }
-  // try {
-  //   const response = await axios.post(options.url, datas);
-  //   console.log(response.data);
-  // } catch (error) {
-  //   console.error(error);
-  // }
-  // alert("Data Found")
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      fetchdata();
+      // Handle the response data here
+    } catch (error) {
+      console.error(error);
+      // Handle the error here
+    }
+  };
 
-
-const handlesubmit = () => {
-  alert("Form Submitted")
-}
-
-return (
-
-
-  <div className={style.main}>
-    <div className={style.container}>
-      <form className={style.form}>
-        <input className={style.input} type="text" placeholder="Enter the url of your product" />
-        <input className={style.input} type="email" placeholder="Enter your mail id" />
-        <button onClick={handlesubmit} className={style.button} type="submit">Submit</button>
-      </form>
+  return (
+    <div className={style.main}>
+      <div className={style.container}>
+        <form className={style.form} onSubmit={handleSubmit}>
+          <input
+            className={style.input}
+            type="text"
+            placeholder="Enter the url of your product"
+            name="aurl"
+            value={formData.aurl}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className={style.input}
+            type="email"
+            placeholder="Enter your mail id"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <button className={style.button} type="submit">Submit</button>
+        </form>
+      </div>
     </div>
-  </div>
-)
+  );
 }
 
 export default FormSection

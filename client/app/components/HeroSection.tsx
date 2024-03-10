@@ -19,7 +19,7 @@ const HeroSection = () => {
           <p className={style.para}>
             Use sentiment analysis to quickly detect feelings and pain points.
           </p>
-          
+          <button><Link href='/#gourav'>Meow</Link></button>
         </div>
       </div>
     </>
