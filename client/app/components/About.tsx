@@ -10,6 +10,7 @@ const About = () => {
         <div id="about" className={style.main}>
             <div className={style.container}>
                 About this Project..........
+                Nothing Much What about you??
             </div>
         </div>
     )

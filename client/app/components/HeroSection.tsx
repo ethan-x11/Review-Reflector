@@ -1,25 +1,29 @@
-
-import React, { useState, useEffect } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 const style = {
-  main: "h-screen sm:h-full bg-hero md:bg-herobg bg-no-repeat bg-cover bg-center ",
-  container: "py-32 flex flex-col md:flex-row items-center justify-between h-full px-16 sm:px-44 bg-white/80 md:bg-white/0",
-}
+  main: "bg-gradient-to-r from-[#09a178] via-[#069786] to-[#038c95] ",
+  container: "flex flex-col justify-start items-center h-full pt-64 pb-8 gap-y-8",
+  heading: "dark:text-white text-black text-5xl font-bold",
+  para: "dark:text-white text-blacktext-2xl font-semibold",
+};
 
 const HeroSection = () => {
-
   return (
     <>
       {/* <div className={style.bg} ></div> */}
       <div className={style.main}>
         <div className={style.container}>
-          HeroSection
+          <h2 className={style.heading}>Sentiment Analysis Checker</h2>
+          <p className={style.para}>
+            Use sentiment analysis to quickly detect feelings and pain points.
+          </p>
+          <button><Link href='/#gourav'>Meow</Link></button>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default HeroSection
+export default HeroSection;

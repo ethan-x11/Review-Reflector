@@ -1,42 +1,58 @@
-import Link from 'next/link';
-import React from 'react';
-import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaWhatsapp } from 'react-icons/fa';
+import Link from "next/link";
+import { title } from "process";
+import React from "react";
+import {
+    FaMapMarkerAlt,
+    FaPhone,
+    FaEnvelope,
+    FaWhatsapp,
+} from "react-icons/fa";
 
 const style = {
     // main: "w-full py-2 bg-[#26272b]",
-    wrapper: 'bg-[#26272b] md:bg-[#e23832]',
-    main: "w-full py-2 md:bg-footerbg md:bg-cover md:h-dvh flex flex-col justify-end",
-    container: "pb-8 pt-6 px-8 md:px-32 flex flex-col md:flex-row justify-between items-center ",
+    wrapper: "bg-black",
+    main: "w-full py-2   flex flex-col justify-end bg-white/10 backdrop-blur-lg ",
+    container:"pb-8 pt-6 px-8 md:px-32 flex flex-col md:flex-row justify-between items-center ",
     left: "md:w-1/2 pb-8 md:pb-0",
     heading: "text-white pb-6 text-xl md:text-2xl",
     items: "flex flex-row justify-start gap-4 py-2 items-center text-white",
-    right: "",
+    right: "md:w-1/2 pb-8 md:pb-0",
     bottom: "",
     copyright: "text-center",
-}
+    title: "text-2xl font-bold ",
+};
 
 const Footer = () => {
-    const address = 'Near Jyangra Ghosh Para, Kolkata - 700009';
-    const newaddress = '2nd Branch - Loknath near Hanuman Mandir';
-    const phone = '+91 70036-26799';
-    const email = 'Educationalpoint2510@gmail.com';
-    const whatsapp = '9804988185';
-    const googleMapsLink = 'https://maps.app.goo.gl/WL9wUFoxuMRPNZDA6';
+    const email = "";
+    const whatsapp = "";
 
     return (
         <div id="contact" className={style.wrapper}>
             <div className={style.main}>
                 <div className={style.container}>
                     <div className={style.left}>
-                        L
+                        <div className={style.heading}>
+                            <h2 className={style.title}>Team Members</h2>
+                            <p>Subhanjan Dutta - subhanjan.dutta@gmail.com</p>
+                            <p>Anusha Bera - anusha.bera@gmail.com</p>
+                            <p>Gourav Shaw - shawgourav62@gmail.com</p>
+                            <p>Sugato Bagchi - sugato.bagchi@gmail.com</p>
+                        </div>
                     </div>
                     <div className={style.right}>
-                        R
+                    <div className={style.heading}>
+                            <h2 className={style.title}>Technologies Used</h2>
+                            <p>NextJs</p>
+                            <p>Machine Learning</p>
+                            <p>Python</p>
+                            <p>Nodejs</p>
+                        </div>
                     </div>
+                    
                 </div>
                 <div className={style.bottom}>
                     <hr />
-                    <p className={style.copyright}>COPYRIGHT (C) 2023 EDUCATIONAL POINT</p>
+                    <p className={style.copyright}>COPYRIGHT (C) 2024 MEOW</p>
                 </div>
             </div>
         </div>
