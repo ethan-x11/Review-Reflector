@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Image from 'next/image';
 
 const style = {
   main: 'pt-16 bg-[#ffe08f]',
@@ -11,7 +12,7 @@ const style = {
 
 const FormSection = () => {
   const [isLoading, setIsLoading] = useState(true);
-
+  const [OutputData, setOutputData] = useState("");
   const [formData, setFormData] = useState({
     aurl: '',
     email: ''
@@ -24,6 +25,76 @@ const FormSection = () => {
     });
   };
 
+//
+
+const handleAPIRequest = async () => {
+  const requestData = {
+      format: "json",
+      data: {
+      "shipments": [
+        {
+          "name": "souvik Sahana",
+          "add": "Fului, hooghly",
+          "pin": "712122",
+          "city": "Hooghly",
+          "state": "West Bengal",
+          "country": "India",
+          "phone": "7718455261",
+          "order": "1234",
+          "payment_mode": "Prepaid",
+          "return_pin": "",
+          "return_city": "",
+          "return_phone": "",
+          "return_add": "",
+          "return_state": "",
+          "return_country": "",
+          "products_desc": "",
+          "hsn_code": "",
+          "cod_amount": "",
+          "order_date": null,
+          "total_amount": "",
+          "seller_add": "",
+          "seller_name": "",
+          "seller_inv": "",
+          "quantity": "",
+          "waybill": "",
+          "shipment_width": "",
+          "shipment_height": "",
+          "weight": "",
+          "seller_gst_tin": "",
+          "shipping_mode": "Surface",
+          "address_type": "home"
+        }
+      ],
+      "pickup_location": {
+        "name": "test",
+        "add": "test, delhi",
+        "city": "Kota",
+        "pin_code": 324005,
+        "country": "India",
+        "phone": "8617022393"
+      }
+    }
+  };
+
+  try {
+    const response = await axios.post("https://staging-express.delhivery.com/api/cmu/create.json", requestData, {
+      headers: {
+        "Authorization": "Token 0368e03c66b1fc26848d7d4bed4798c45de2b3cf",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      }
+    });
+    console.log(response.data);
+    // Handle the response data here
+  } catch (error) {
+    console.error(error);
+    // Handle the error here
+  }
+};
+
+//
+  
   const fetchdata = async () => {
     const url = "https://review-reflector-server.onrender.com/amazon";
     axios.defaults.headers.post["Content-Type"] =
@@ -36,6 +107,7 @@ const FormSection = () => {
         JSON.stringify(formData)
       );
       console.log(data);
+      setOutputData(data.ScoreGraph.positive.slice(1, -1));
     } catch (error) {
       console.error(error);
     }
@@ -44,7 +116,8 @@ const FormSection = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      fetchdata();
+      // fetchdata();
+      handleAPIRequest();
       // Handle the response data here
     } catch (error) {
       console.error(error);
@@ -63,7 +136,7 @@ const FormSection = () => {
             name="aurl"
             value={formData.aurl}
             onChange={handleChange}
-            required
+            // required
           />
           <input
             className={style.input}
@@ -72,10 +145,22 @@ const FormSection = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            required
+            // required
           />
           <button className={style.button} type="submit">Submit</button>
         </form>
+
+
+        {OutputData && (
+          <Image
+            src={OutputData}
+            alt="Output Image"
+            width={5000}
+            height={500}
+          />
+        )}
+        
+        {/* <Image src={}></Image> */}
       </div>
     </div>
   );
