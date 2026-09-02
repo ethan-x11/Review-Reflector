@@ -26,9 +26,3 @@ This project presents a comprehensive solution for analyzing customer sentiments
 ## How to Use
 
 Detailed instructions on setting up and running the project locally will be provided in a future update. 
-
-## Contributing
-
-We welcome contributions to enhance the project's features and functionality! Please feel free to fork the repository and submit pull requests. 
-
-Let's make this Amazon product review sentiment analysis tool even more powerful and insightful! 
